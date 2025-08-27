@@ -1,8 +1,9 @@
 @php
-  $pageTitle = $pageTitle ?? 'MyBlog — Modern Frontend';
+$pageTitle = $pageTitle ?? 'MyBlog — Modern Frontend';
 @endphp
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -41,21 +42,44 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
   <style>
-    .noise { position: relative; }
-    .noise:before { content:""; position:absolute; inset:0; pointer-events:none; opacity:.04; background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="400"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.45"/></svg>'); }
-    .link-underline { background-size: 0 2px; background-image: linear-gradient(currentColor,currentColor); background-repeat: no-repeat; background-position: 0 100%; transition: background-size .3s ease; }
-    .link-underline:hover { background-size: 100% 2px; }
+    .noise {
+      position: relative;
+    }
+
+    .noise:before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: .04;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="400"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.45"/></svg>');
+    }
+
+    .link-underline {
+      background-size: 0 2px;
+      background-image: linear-gradient(currentColor, currentColor);
+      background-repeat: no-repeat;
+      background-position: 0 100%;
+      transition: background-size .3s ease;
+    }
+
+    .link-underline:hover {
+      background-size: 100% 2px;
+    }
   </style>
 
   @stack('head')
 </head>
+
 <body class="font-inter text-slate-100 bg-slate-950 selection:bg-indigo-500/40 selection:text-white">
 
-  <header id="navbar" class="fixed top-0 inset-x-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-slate-900/50 bg-slate-900/70 border-b border-white/10">
+  <header id="navbar"
+    class="fixed top-0 inset-x-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-slate-900/50 bg-slate-900/70 border-b border-white/10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="h-16 flex items-center justify-between">
         <a href="{{ route('home') }}" class="flex items-center gap-2">
-          <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-sky-400 bg-clip-text text-transparent">MyBlog</span>
+          <span
+            class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-sky-400 bg-clip-text text-transparent">MyBlog</span>
         </a>
         <nav class="hidden md:flex items-center gap-8 text-sm text-slate-200">
           <a class="link-underline hover:text-white" href="{{ route('home') }}">Home</a>
@@ -65,14 +89,36 @@
           <a class="link-underline hover:text-white" href="{{ route('contact') }}">Contact</a>
         </nav>
         <div class="flex items-center gap-3">
-          <form method="GET" action="{{ route('blog.index') }}" class="hidden sm:flex items-center gap-2 rounded-full bg-white/5 ring-1 ring-white/10 px-3 py-1.5">
+          <form method="GET" action="{{ route('blog.index') }}"
+            class="hidden sm:flex items-center gap-2 rounded-full bg-white/5 ring-1 ring-white/10 px-3 py-1.5">
             <i class='bx bx-search text-lg text-slate-300'></i>
-            <input name="search" value="{{ request('search') }}" class="bg-transparent placeholder:text-slate-400 text-sm focus:outline-none text-slate-100 w-40" placeholder="Search articles..." />
+            <input name="search" value="{{ request('search') }}"
+              class="bg-transparent placeholder:text-slate-400 text-sm focus:outline-none text-slate-100 w-40"
+              placeholder="Search articles..." />
           </form>
-          <button class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white/5 ring-1 ring-white/10"><i class='bx bx-menu text-2xl'></i></button>
+          <button
+            class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white/5 ring-1 ring-white/10"><i
+              class='bx bx-menu text-2xl'></i></button>
         </div>
+        @auth
+
+        <form method="POST" action="{{ route('logout') }}">
+          @csrf
+          <button type="submit"
+            class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-sm font-semibold">Logout</button>
+        </form>
+        @endauth
+
       </div>
     </div>
+    <div class="flex items-center gap-3">
+
+
+      <button
+        class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white/5 ring-1 ring-white/10"><i
+          class='bx bx-menu text-2xl'></i></button>
+    </div>
+
   </header>
 
   @yield('content')
@@ -94,7 +140,7 @@
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"></script>
-    <!-- Swiper JS -->
+  <!-- Swiper JS -->
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
   <script>
@@ -106,4 +152,5 @@
   </script>
   @stack('scripts')
 </body>
+
 </html>
