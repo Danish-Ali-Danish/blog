@@ -10,7 +10,7 @@ use App\Http\Controllers\Admin\UserController;
 
 // ================= FRONTEND ==================
 
-// Home and public pages
+// Public pages
 Route::get('/', [FrontendController::class, 'home'])->name('home');
 Route::get('/blog', [FrontendController::class, 'blog'])->name('blog.index');
 Route::get('/blog/{slug}', [FrontendController::class, 'post'])->name('blog.post');
@@ -21,7 +21,7 @@ Route::get('/contact', [FrontendController::class, 'contact'])->name('contact');
 
 // ================= AUTH ==================
 
-// Only guests can access login/register
+// Guest-only routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
@@ -29,16 +29,21 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
-// Only authenticated users can logout
+// Authenticated users can logout
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-// ================= ADMIN ==================
+// ================= DASHBOARDS ==================
 
-// Authenticated users only
-Route::middleware(['auth'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+// Admin dashboard & resources
+Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('posts', PostController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('comments', CommentController::class)->only(['index','destroy','update']);
     Route::resource('users', UserController::class)->only(['index','destroy']);
+});
+
+// User dashboard (normal users)
+Route::middleware(['auth','role:user'])->prefix('user')->name('user.')->group(function () {
+    Route::get('/dashboard', [FrontendController::class, 'userDashboard'])->name('dashboard');
 });

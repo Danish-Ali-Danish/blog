@@ -15,17 +15,22 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+        $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('home')->with('success', 'Welcome back!');
+
+            // ✅ Role-based redirect
+            if (Auth::user()->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            } else {
+                return redirect()->route('home'); // normal user
+            }
         }
 
-        return back()->withErrors(['email' => 'Invalid credentials'])->onlyInput('email');
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])->onlyInput('email');
     }
 
     public function showRegister()
@@ -36,14 +41,14 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
+            'name'     => 'required',
+            'email'    => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
@@ -56,6 +61,6 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('login')->with('success', 'Logged out successfully!')  ;
+        return redirect()->route('login')->with('success', 'Logged out successfully!');
     }
 }
